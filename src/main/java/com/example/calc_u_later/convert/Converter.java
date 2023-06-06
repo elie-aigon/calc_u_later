@@ -11,6 +11,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Converter extends Controller {
+    @FXML
+    public ComboBox<String> ConvertFromCbb;
+    @FXML
+    public ComboBox<String> ConvertToCbb;
     ObservableList<String> FullUnits = FXCollections.observableArrayList("Centimètres", "Mètres", "Pouces", "Pieds",
             "Grammes", "Onces", "Kilogrammes", "Livres",
             "Celsius", "Fahrenheit", "Kelvin",
@@ -19,8 +23,11 @@ public class Converter extends Controller {
     ObservableList<String> Temperature = FXCollections.observableArrayList("Celsius", "Fahrenheit", "Kelvin");
     ObservableList<String> Volumes = FXCollections.observableArrayList("Litres", "Gallons", "Mètres cubes", "Pieds cubes");
     ObservableList<String> Length = FXCollections.observableArrayList("Centimètres", "Mètres", "Pouces", "Pieds");
+    public void initialize() {
+        ConvertFromCbb.setItems(FullUnits);
+    }
     @FXML
-    private void UpdateConvertCbb(ActionEvent event) {
+    public void UpdateConvertCbb() {
         ConvertToCbb.getItems().clear();
         if (Weight.contains(ConvertFromCbb.getValue())) {
             ConvertToCbb.setItems(Weight);

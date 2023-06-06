@@ -69,7 +69,7 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ComboBox fx:id="ConvertFromCbb" onAction="#UpdateConvertCbb" prefHeight="124.0" prefWidth="300.0" />
+                              <ComboBox fx:id="ConvertFromCbb" onAction="#update" prefHeight="124.0" prefWidth="300.0" />
                               <ComboBox fx:id="ConvertToCbb" prefHeight="146.0" prefWidth="300.0" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
