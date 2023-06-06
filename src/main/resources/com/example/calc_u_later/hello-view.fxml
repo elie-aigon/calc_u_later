@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calc_u_later.Controller">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calc_u_later.Converter">
    <children>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -70,8 +69,8 @@
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ComboBox fx:id="fromCombobox" prefHeight="124.0" prefWidth="300.0" />
-                              <ComboBox fx:id="toCombobox" prefHeight="146.0" prefWidth="300.0" GridPane.columnIndex="1" />
+                              <ComboBox fx:id="ConvertFromCbb" onAction="#UpdateConvertCbb" prefHeight="124.0" prefWidth="300.0" />
+                              <ComboBox fx:id="ConvertToCbb" prefHeight="146.0" prefWidth="300.0" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                         <TextField prefHeight="145.0" prefWidth="600.0" />
