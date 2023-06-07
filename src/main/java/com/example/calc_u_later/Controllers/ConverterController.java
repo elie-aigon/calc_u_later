@@ -58,6 +58,10 @@ public class ConverterController implements Initializable {
         input.setText(output);
     }
     @FXML
+    private void clearInputField() {
+        UpdateTextOutput("");
+    }
+    @FXML
     private void HandleKeyRelease(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             DefineType();
