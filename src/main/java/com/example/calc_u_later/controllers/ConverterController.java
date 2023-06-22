@@ -1,28 +1,31 @@
 package com.example.calc_u_later.controllers;
 
+import com.example.calc_u_later.controllers.toolsconverter.HistoryObject;
+import com.example.calc_u_later.controllers.toolsconverter.MemoryObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-//import com.example.calc_u_later.models.converter.ConverterModel;
 
 public class ConverterController implements Initializable {
-    @FXML
-    private TextField input;
-    @FXML
-    private ComboBox<String> FromCbb;
-    @FXML
-    private ComboBox<String> ToCbb;
-    @FXML
-    private Button SubmitButton;
+    double tempInputValue;
+    @FXML private TextField input;
+    @FXML private ComboBox<String> FromCbb;
+    @FXML private ComboBox<String> ToCbb;
+    @FXML private ScrollPane historyscrollpane;
+    @FXML private HistoryObject historyobject;
+    @FXML private ScrollPane memoryscrollpane;
+    @FXML private MemoryObject memoryobject;
     ObservableList<String> FullUnits = FXCollections.observableArrayList("Centimeters", "Meters", "Inch", "Feet",
             "Grams", "Ounces", "Kilograms", "Pound",
             "Celsius", "Fahrenheit", "Kelvin",
@@ -31,16 +34,13 @@ public class ConverterController implements Initializable {
     ObservableList<String> Temperature = FXCollections.observableArrayList("Celsius", "Fahrenheit", "Kelvin");
     ObservableList<String> Volume = FXCollections.observableArrayList("Liters", "Gallon", "Cubic meters", "Cubic feet");
     ObservableList<String> Length = FXCollections.observableArrayList("Centimeters", "Meters", "Inch", "Feet");
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    @FXML public void initialize(URL url, ResourceBundle resourceBundle) {
         FromCbb.setItems(FullUnits);
-//        input.textProperty().addListener((observable, oldValue, newValue) -> {
-//                    if (!newValue.matches("\\d*\\.?\\d*")) {
-//                        input.setText(newValue.replaceAll("[^\\d.]", ""));
-//                    }
-//                });
+        historyscrollpane.setContent(historyobject);
+        memoryscrollpane.setContent(memoryobject);
     }
-    @FXML
-    private void UpdateToCbb() {
+
+    @FXML private void UpdateToCbb() {
         ToCbb.getItems().clear();
         String value = FromCbb.getValue();
         if (Weight.contains(value)) {
@@ -53,24 +53,25 @@ public class ConverterController implements Initializable {
             ToCbb.getItems().addAll(Length);
         }
     }
-    @FXML
-    private void UpdateTextOutput(String output) {
-        input.setText(output);
+    @FXML private void UpdateTextOutput(double output) {
+        input.setText(String.valueOf(output));
+        historyobject.AddHistoricElement(tempInputValue, output, FromCbb.getValue(), ToCbb.getValue());
     }
-    @FXML
-    private void clearInputField() {
-        UpdateTextOutput("");
+    @FXML private void clearInputField() {
+        input.setText("");
     }
-    @FXML
-    private void HandleKeyRelease(KeyEvent event) {
+    @FXML private void HandleKeyRelease(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             DefineType();
         }
     }
 //    Converter Logical Method
-    @FXML
-    private void DefineType() {
+    @FXML private void DefineType() {
         String value = FromCbb.getValue();
+        if (input.getText().length() > 0) {
+            tempInputValue = Double.parseDouble(input.getText());
+        }
+        System.out.println(FromCbb.getValue());
         if (Weight.contains(value)) {
             ConvertWeight();
         } else if (Temperature.contains(value)) {
@@ -112,9 +113,7 @@ public class ConverterController implements Initializable {
                 output = output;
                 break;
         }
-        String out = String.valueOf(output);
-        out = out + " " + ToCbb.getValue();
-        UpdateTextOutput(out);
+        UpdateTextOutput(output);
     }
     private void ConvertVolume() {
         double output;
@@ -146,9 +145,7 @@ public class ConverterController implements Initializable {
                 output = output;
                 break;
         }
-        String out = String.valueOf(output);
-        out = out + " " + ToCbb.getValue();
-        UpdateTextOutput(out);
+        UpdateTextOutput(output);
     }
     private void ConvertLength() {
         double output;
@@ -180,9 +177,7 @@ public class ConverterController implements Initializable {
                 output = output;
                 break;
         }
-        String out = String.valueOf(output);
-        out = out + " " + ToCbb.getValue();
-        UpdateTextOutput(out);
+        UpdateTextOutput(output);
     }
     private void ConvertTemperature() {
         double output;
@@ -208,8 +203,8 @@ public class ConverterController implements Initializable {
                 output = output;
                 break;
         }
-        String out = String.valueOf(output);
-        out = out + " " + ToCbb.getValue();
-        UpdateTextOutput(out);
+        UpdateTextOutput(output);
     }
+
+
 }

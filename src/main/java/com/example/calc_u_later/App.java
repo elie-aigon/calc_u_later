@@ -17,19 +17,6 @@ import java.util.ResourceBundle;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-//        TabPane tabPane = new TabPane();
-//
-//        Node CalculatorContent = FXMLLoader.load(App.class.getResource("CalculatorTab.fxml"));
-//        Tab CalculatorTab = new Tab("Calculator");
-//        CalculatorTab.setContent(CalculatorContent);
-//        CalculatorTab.setClosable(false);
-//        tabPane.getTabs().add(CalculatorTab);
-//
-//        Node ConverterContent = FXMLLoader.load(App.class.getResource("ConverterTab.fxml"));
-//        Tab ConverterTab = new Tab("Converter");
-//        ConverterTab.setContent(ConverterContent);
-//        ConverterTab.setClosable(false);
-//        tabPane.getTabs().add(ConverterTab);
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("MainScene.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Calc_U_later");

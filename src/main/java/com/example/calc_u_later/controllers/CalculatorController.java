@@ -10,4 +10,5 @@ public class CalculatorController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("a");
     }
+
 }
