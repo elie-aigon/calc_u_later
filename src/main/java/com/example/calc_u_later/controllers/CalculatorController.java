@@ -56,6 +56,7 @@ public class CalculatorController implements Initializable {
             else if (this.previousFuncLabel > 0) { exprField.setText(exprField.getText().substring(0, exprField.getText().length() - this.previousFuncLabel) + valueField.getText() + " " + buttonLabel + " "); }
             else { exprField.setText( exprField.getText() + valueField.getText() + " " + buttonLabel + " " ); }
 
+            valueField.setText(this.calculator.StringResult(this.exprTokens));
             if (buttonLabel.equals("x")) { this.exprTokens.add("*"); }
             else { this.exprTokens.add(buttonLabel); }
         }
@@ -66,6 +67,7 @@ public class CalculatorController implements Initializable {
             else if (this.previousFuncLabel > 0) { exprField.setText(exprField.getText().substring(0, exprField.getText().length() - this.previousFuncLabel) + valueField.getText() + " " + this.SpecialOperator(buttonLabel) + " "); }
             else { exprField.setText(exprField.getText() + valueField.getText() + " " + this.SpecialOperator(buttonLabel) + " " ); }
 
+            valueField.setText(this.calculator.StringResult(this.exprTokens));
             this.exprTokens.add(this.SpecialOperator(buttonLabel));
         }
 
@@ -114,11 +116,13 @@ public class CalculatorController implements Initializable {
         String buttonLabel = valueButton.getText();
 
         this.currentFuncLabel = this.Functions(buttonLabel, valueField.getText());
-        if (this.isFuncValue || this.previousFuncLabel > 0) { exprField.setText(exprField.getText().substring(0, exprField.getText().length() - this.previousFuncLabel) + this.currentFuncLabel); }
-        else { exprField.setText(exprField.getText() + this.currentFuncLabel); }
+        if (!buttonLabel.equals("rand")) {
+            if (this.isFuncValue || this.previousFuncLabel > 0) { exprField.setText(exprField.getText().substring(0, exprField.getText().length() - this.previousFuncLabel) + this.currentFuncLabel); }
+            else { exprField.setText(exprField.getText() + this.currentFuncLabel); }
+            this.previousFuncLabel = this.currentFuncLabel.length();
+        }
 
         valueField.setText(this.calculator.Functions(buttonLabel, valueField.getText()));
-        this.previousFuncLabel = this.currentFuncLabel.length();
         this.isFuncValue = true;
         this.isNewValue = true;
     }
@@ -176,7 +180,7 @@ public class CalculatorController implements Initializable {
 
         for (String token : this.exprTokens) { System.out.print(token + " "); }
         System.out.println();
-        this.calculator.StringResult(this.exprTokens);
+        valueField.setText(this.calculator.StringResult(this.exprTokens));
         exprField.setText( exprField.getText() + " = " );
     }
 
@@ -202,6 +206,11 @@ public class CalculatorController implements Initializable {
     private void ClearButton() {
         if (valueField.getText() != "0") {
             valueField.setText("0");
+            this.isDecimal = false;
+            this.isFuncValue = false;
+            this.isNewValue = true;
+            this.previousFuncLabel = 0;
+            this.parenthesesDepth = 0;
         }
         else if (exprField.getText() != "") {
             this.exprTokens.clear();
@@ -230,6 +239,7 @@ public class CalculatorController implements Initializable {
     private static String SpecialOperator(String op) {
         switch (op) {
             case "x√": return "yroot";
+            case "%": return "%";
             case "mod": return "Mod";
             case "x^y": return "^";
             default:
