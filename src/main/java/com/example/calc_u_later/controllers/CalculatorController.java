@@ -1,6 +1,8 @@
 package com.example.calc_u_later.controllers;
 
 
+import com.example.calc_u_later.controllers.toolscalculator.HistoryObject;
+import com.example.calc_u_later.controllers.toolscalculator.MemoryObject;
 import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
@@ -13,12 +15,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.example.calc_u_later.models.CalculatorModel;
+import javafx.scene.control.ScrollPane;
 
 
 public class CalculatorController implements Initializable {
     //FXML elements
     @FXML private Label exprField;
     @FXML private Label valueField;
+    @FXML private ScrollPane historyscrollpane;
+    @FXML private ScrollPane memoryscrollpane;
+    @FXML private HistoryObject historyobject;
+    @FXML private MemoryObject memoryobject;
 
 
     //Calculator's logic, solves expression using reverse polish and shunting yard algorithm
@@ -182,6 +189,7 @@ public class CalculatorController implements Initializable {
         System.out.println();
         valueField.setText(this.calculator.StringResult(this.exprTokens));
         exprField.setText( exprField.getText() + " = " );
+        historyobject.AddHistoricElement(exprField.getText(), valueField.getText());
     }
 
     @FXML
