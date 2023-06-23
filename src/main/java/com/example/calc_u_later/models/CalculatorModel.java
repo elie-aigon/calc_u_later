@@ -21,6 +21,27 @@ public class CalculatorModel {
         return Double.toString(this.ReversePolishNotation(reversePolishExpression));
     }
 
+
+
+//    public String SingleOperation(ArrayList<String> tokens, String value){
+//        String operator = tokens.get(1);
+//        double x = Double.parseDouble(tokens.get(0 )), y = Double.parseDouble(value);
+//
+//        switch (operator) {
+//            case "+": return Double.toString(x - y);
+//            case "-": return Double.toString(x - y);
+//            case "*": return Double.toString(x * y);
+//            case "/": return Double.toString(x / y);
+//            case "%": return Double.toString((x/100) * y);
+//            case "yroot": return Double.toString(Math.pow(x, 1/y));
+//            case "^": return Double.toString(Math.pow(x, y));
+//            case "mod": return Double.toString(x % y);
+//            default: return null;
+//        }
+//    }
+
+
+
     public static String Functions(String func, String strValue) {
         double value = Double.parseDouble(strValue);
 

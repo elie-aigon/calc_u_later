@@ -33,9 +33,11 @@ public class CalculatorController implements Initializable {
     private CalculatorModel calculator = new CalculatorModel();
 
     //Controller's flags/utilities
+    private ArrayList<String> copyTokens;
     private String currentFuncLabel;
     private int parenthesesDepth = 0;
     private int previousFuncLabel;
+    private boolean isChainedOperation;
     private boolean isNewValue;
     private boolean isFuncValue;
     private boolean isDecimal;
@@ -184,11 +186,35 @@ public class CalculatorController implements Initializable {
             this.exprTokens.add(valueField.getText());
             exprField.setText( exprField.getText() + valueField.getText() + " ");
         }
-
         for (String token : this.exprTokens) { System.out.print(token + " "); }
         System.out.println();
-        valueField.setText(this.calculator.StringResult(this.exprTokens));
+
+        String result = this.calculator.StringResult(this.exprTokens);
+        valueField.setText(result);
         exprField.setText( exprField.getText() + " = " );
+        this.isChainedOperation = true;
+
+        //BIG TRAVAUX
+
+//        if (this.isChainedOperation){
+//            this.exprTokens.set(0, result);
+//            this.exprTokens.add(this.calculator.StringResult(this.copyTokens));
+//            result = this.calculator.StringResult(this.exprTokens);
+//            valueField.setText(result);
+//            exprField.setText( exprField.getText() + " = " );
+//        }
+//        else {
+//            this.copyTokens = this.exprTokens;
+//            this.copyTokens.remove(0);
+//            this.copyTokens.remove(1);
+//            for (int i = this.exprTokens.size() - 1; i >= 2; i--) {
+//                this.exprTokens.remove(i);
+//            }
+//
+//            valueField.setText(result);
+//            exprField.setText( exprField.getText() + " = " );
+//            this.isChainedOperation = true;
+//        }
         historyobject.AddHistoricElement(exprField.getText(), valueField.getText());
     }
 
