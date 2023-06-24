@@ -1,21 +1,22 @@
 package com.example.calc_u_later.controllers;
 
 
-import com.example.calc_u_later.controllers.toolscalculator.HistoryObject;
-import com.example.calc_u_later.controllers.toolscalculator.MemoryObject;
+import javafx.fxml.FXML;
 import javafx.event.Event;
 import javafx.fxml.Initializable;
-import javafx.fxml.FXML;
+import java.util.ResourceBundle;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import java.net.URL;
+
 import java.util.ArrayList;
-import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 import com.example.calc_u_later.models.CalculatorModel;
-import javafx.scene.control.ScrollPane;
+import com.example.calc_u_later.controllers.toolscalculator.HistoryObject;
+import com.example.calc_u_later.controllers.toolscalculator.MemoryObject;
+
 
 
 public class CalculatorController implements Initializable {
@@ -33,14 +34,14 @@ public class CalculatorController implements Initializable {
     private CalculatorModel calculator = new CalculatorModel();
 
     //Controller's flags/utilities
-    private ArrayList<String> copyTokens;
     private String currentFuncLabel;
-    private int parenthesesDepth = 0;
+    private String result;
     private int previousFuncLabel;
-    private boolean isChainedOperation;
+    private int parenthesesDepth = 0;
     private boolean isNewValue;
     private boolean isFuncValue;
     private boolean isDecimal;
+    private boolean isChainedOperation = false;
 
 
 
@@ -55,6 +56,7 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void OperatorButtons(Event event) {
+        this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
 
@@ -90,6 +92,7 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void ValueButtons(Event event) {
+        this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
 
@@ -121,6 +124,7 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void FunctionButtons(Event event) {
+        this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
 
@@ -138,6 +142,7 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void ParenthesesButtons(Event event) {
+        this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
         String currentValueTxt = valueField.getText();
@@ -186,40 +191,27 @@ public class CalculatorController implements Initializable {
             this.exprTokens.add(valueField.getText());
             exprField.setText( exprField.getText() + valueField.getText() + " ");
         }
-        for (String token : this.exprTokens) { System.out.print(token + " "); }
-        System.out.println();
+//        for (String token : this.exprTokens) { System.out.print(token + " "); }
+//        System.out.println();
 
-        String result = this.calculator.StringResult(this.exprTokens);
-        valueField.setText(result);
+        if (this.isChainedOperation) {
+            this.ChainedOperation();
+        }
+        else {
+            this.result = this.calculator.StringResult(this.exprTokens);
+        }
+
+        valueField.setText(this.result);
         exprField.setText( exprField.getText() + " = " );
-        this.isChainedOperation = true;
 
-        //BIG TRAVAUX
-
-//        if (this.isChainedOperation){
-//            this.exprTokens.set(0, result);
-//            this.exprTokens.add(this.calculator.StringResult(this.copyTokens));
-//            result = this.calculator.StringResult(this.exprTokens);
-//            valueField.setText(result);
-//            exprField.setText( exprField.getText() + " = " );
-//        }
-//        else {
-//            this.copyTokens = this.exprTokens;
-//            this.copyTokens.remove(0);
-//            this.copyTokens.remove(1);
-//            for (int i = this.exprTokens.size() - 1; i >= 2; i--) {
-//                this.exprTokens.remove(i);
-//            }
-//
-//            valueField.setText(result);
-//            exprField.setText( exprField.getText() + " = " );
-//            this.isChainedOperation = true;
-//        }
         historyobject.AddHistoricElement(exprField.getText(), valueField.getText());
+
+        this.isChainedOperation = true;
     }
 
     @FXML
     private void SignButton(Event event) {
+        this.NewOperation();
         String currentValueTxt = valueField.getText();
 
         if (currentValueTxt != "0") {
@@ -230,6 +222,8 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void DecimalButton() {
+        this.NewOperation();
+
         if (!this.isDecimal) {
             valueField.setText(valueField.getText() + ".");
             this.isDecimal = true;
@@ -238,6 +232,8 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void ClearButton() {
+        this.NewOperation();
+
         if (valueField.getText() != "0") {
             valueField.setText("0");
             this.isDecimal = false;
@@ -254,6 +250,8 @@ public class CalculatorController implements Initializable {
 
     @FXML
     private void BackspaceButton() {
+        this.NewOperation();
+
         String currentValueTxt = valueField.getText();
         if (this.isFuncValue){
             return;
@@ -305,6 +303,44 @@ public class CalculatorController implements Initializable {
                 default:
                     return null;
             }
+        }
+    }
+
+
+
+     private void ChainedOperation() {
+         ArrayList<String> chainedOp = new ArrayList<>();
+         ArrayList<String> secondOperandExpr = this.calculator.defineSecondOperand(this.exprTokens);
+
+         chainedOp.add(this.result);
+
+         if (!this.isChainedOperation) {
+             exprField.setText(this.result);
+
+             chainedOp.add(secondOperandExpr.get(secondOperandExpr.size() - 1));
+             exprField.setText(exprField.getText() + " " + secondOperandExpr.get(secondOperandExpr.size() - 1));
+             secondOperandExpr.remove(secondOperandExpr.size() - 1);
+
+             String secondOperand = this.calculator.StringResult(secondOperandExpr);
+             chainedOp.add(secondOperand);
+             exprField.setText(exprField.getText() + " " + secondOperand);
+         }
+         else {
+             chainedOp.add(this.exprTokens.get(1));
+             chainedOp.add(this.exprTokens.get(2));
+             exprField.setText(this.result + " " + this.exprTokens.get(1) + " " + this.exprTokens.get(2));
+         }
+
+         this.exprTokens = chainedOp;
+         this.result = this.calculator.StringResult(chainedOp);
+     }
+
+    private void NewOperation() {
+        if (this.isChainedOperation) {
+            this.isChainedOperation = false;
+            this.exprField.setText("");
+            this.valueField.setText("");
+            this.exprTokens.clear();
         }
     }
 }

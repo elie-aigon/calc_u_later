@@ -12,14 +12,26 @@ public class CalculatorModel {
 
     }
 
-    public String StringResult(ArrayList<String> tokens) {
-        ArrayList<String> reversePolishExpression = this.ShuntingYardAlgo(tokens);
-        for (String token : reversePolishExpression) {
-            System.out.print(token + " ");
-        }
-        System.out.println();
-        return Double.toString(this.ReversePolishNotation(reversePolishExpression));
+    public static String StringResult(ArrayList<String> tokens) {
+        ArrayList<String> reversePolishExpression = ShuntingYardAlgo(tokens);
+        return Double.toString(ReversePolishNotation(reversePolishExpression));
     }
+
+
+
+//    public static String ChainedOperation(ArrayList<String> tokens, String baseResult) {
+//        ArrayList<String> chainedOp = new ArrayList<>();
+//        ArrayList<String> secondOperandExpr = defineSecondOperand(tokens);
+//
+//        chainedOp.add(baseResult);
+//
+//        chainedOp.add(secondOperandExpr.get(secondOperandExpr.size() - 1));
+//        secondOperandExpr.remove(secondOperandExpr.size() - 1);
+//
+//        chainedOp.add(StringResult(secondOperandExpr));
+//
+//        return StringResult(chainedOp);
+//    }
 
 
 
@@ -67,13 +79,13 @@ public class CalculatorModel {
 
 
 
-    private ArrayList<String> ShuntingYardAlgo(ArrayList<String> tokens) {
+    private static ArrayList<String> ShuntingYardAlgo(ArrayList<String> tokens) {
         ArrayList<String> rpnExpr = new ArrayList<>();
         Stack<String> opStack = new Stack<String>();
 
         for (String token : tokens) {
             if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("yroot") || token.equals("^") || token.equals("mod") || token.equals("%")) {
-                while(!opStack.isEmpty() && this.Pemdas(token) <= this.Pemdas(opStack.peek()) && this.LeftToRightOp(token)){
+                while(!opStack.isEmpty() && Pemdas(token) <= Pemdas(opStack.peek()) && LeftToRightOp(token)){
                     rpnExpr.add(opStack.pop());
                 }
                 opStack.push(token);
@@ -105,7 +117,7 @@ public class CalculatorModel {
 
 
 
-    private double ReversePolishNotation(ArrayList<String> rpnExpression) {
+    private static double ReversePolishNotation(ArrayList<String> rpnExpression) {
         Stack<String> resultStack = new Stack<>();
         double x, y;
         String result;
@@ -172,6 +184,41 @@ public class CalculatorModel {
         }
 
         return Double.parseDouble(resultStack.pop());
+    }
+
+
+
+    public ArrayList<String> defineSecondOperand(ArrayList<String> tokens) {
+        ArrayList<String> secondOperandExpr = new ArrayList<>();
+        String baseOperator = "";
+        int operandIndexStart = 0;
+
+        int parenthesesDepth = 0;
+        boolean inParentheses = false;
+
+        for (int i = 0; i < tokens.size(); i++) {
+            if (!inParentheses && Pemdas(baseOperator) < Pemdas(tokens.get(i))) {
+                baseOperator = tokens.get(i);
+                operandIndexStart = i + 1;
+                continue;
+            }
+
+            if (tokens.get(i).equals("(")) {
+                parenthesesDepth++;
+                inParentheses = true;
+            }
+            else if (tokens.get(i).equals(")")) {
+                parenthesesDepth--;
+                if (parenthesesDepth == 0) { inParentheses = false; }
+            }
+        }
+
+        for (int i = operandIndexStart; i < tokens.size(); i++) {
+            secondOperandExpr.add(tokens.get(i));
+        }
+        secondOperandExpr.add(baseOperator);
+
+        return secondOperandExpr;
     }
 
 
