@@ -23,10 +23,10 @@ public class CalculatorController implements Initializable {
     //FXML elements
     @FXML private Label exprField;
     @FXML private Label valueField;
-    @FXML private ScrollPane historyscrollpane;
-    @FXML private ScrollPane memoryscrollpane;
-    @FXML private HistoryObject historyobject;
-    @FXML private MemoryObject memoryobject;
+    @FXML private ScrollPane historyScrollPane;
+    @FXML private ScrollPane memoryScrollPane;
+    @FXML private HistoryObject historyObject;
+    @FXML private MemoryObject memoryObject;
 
 
     //Calculator's logic, solves expression using reverse polish and shunting yard algorithm
@@ -191,8 +191,8 @@ public class CalculatorController implements Initializable {
             this.exprTokens.add(valueField.getText());
             exprField.setText( exprField.getText() + valueField.getText() + " ");
         }
-//        for (String token : this.exprTokens) { System.out.print(token + " "); }
-//        System.out.println();
+        for (String token : this.exprTokens) { System.out.print(token + " "); }
+        System.out.println();
 
         if (this.isChainedOperation) {
             this.ChainedOperation();
@@ -204,9 +204,51 @@ public class CalculatorController implements Initializable {
         valueField.setText(this.result);
         exprField.setText( exprField.getText() + " = " );
 
-        historyobject.AddHistoricElement(exprField.getText(), valueField.getText());
+        historyObject.AddHistoricElement(exprField.getText(), valueField.getText());
 
         this.isChainedOperation = true;
+    }
+
+    @FXML
+    private void MemoryButtons(Event event) {
+        Button valueButton = (Button) event.getSource();
+        String buttonLabel = valueButton.getText();
+        String currentValueTxt = valueField.getText();
+
+        Label memoryLabel = new Label(currentValueTxt);
+        Button MAdd = new Button("M+");
+        Button MSub = new Button("M-");
+
+        switch (buttonLabel) {
+//            case "M+":
+//                memoryObject.CalculatorButtonMAdd(valueField.getText());
+//                break;
+//            case "M-":
+//                memoryObject.CalculatorButtonMSub(valueField.getText());
+//                break;
+            case "MR":
+                valueField.setText(memoryObject.CalculatorButtonMR());
+                break;
+            case "MC":
+                memoryObject.ClearMemory();
+                break;
+            case "MS":
+                memoryLabel.setOnMouseClicked(e -> valueField.setText(memoryLabel.getText()));
+                MAdd.setOnAction(e -> {
+                    double variableResult = Double.parseDouble(memoryLabel.getText()) + Double.parseDouble(valueField.getText());
+                    memoryLabel.setText(Double.toString(variableResult));
+                });
+                MSub.setOnAction(e -> {
+                    double variableResult = Double.parseDouble(memoryLabel.getText()) - Double.parseDouble(valueField.getText());
+                    memoryLabel.setText(Double.toString(variableResult));
+                });
+
+                memoryObject.AddMemoryElement(memoryLabel, MAdd, MSub);
+                break;
+        }
+
+        this.isFuncValue = false;
+        this.isNewValue = true;
     }
 
     @FXML

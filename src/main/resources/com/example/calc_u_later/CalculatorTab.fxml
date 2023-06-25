@@ -16,6 +16,7 @@
 
 <?import com.example.calc_u_later.controllers.toolscalculator.HistoryObject?>
 <?import com.example.calc_u_later.controllers.toolscalculator.MemoryObject?>
+
 <AnchorPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.calc_u_later.controllers.CalculatorController">
    <children>
       <SplitPane dividerPositions="0.5449640287769785" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -183,23 +184,23 @@
                            <font>
                               <Font name="Segoe UI Semibold" size="11.0" />
                            </font></Button>
-                        <Button layoutX="160.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="MCa" GridPane.columnIndex="2" GridPane.columnSpan="2">
+                        <Button layoutX="160.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MemoryButtons" text="MR" GridPane.columnIndex="2" GridPane.columnSpan="2">
                            <font>
                               <Font name="Segoe UI Semibold" size="11.0" />
                            </font></Button>
-                        <Button layoutX="210.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="MS" GridPane.columnIndex="4" GridPane.columnSpan="2">
+                        <Button layoutX="210.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MemoryButtons" text="MS" GridPane.columnIndex="4" GridPane.columnSpan="2">
                            <font>
                               <Font name="Segoe UI Semibold" size="11.0" />
                            </font></Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="M-" GridPane.columnIndex="7">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MemoryButtons" text="M-" GridPane.columnIndex="7">
                            <font>
                               <Font name="Segoe UI Semibold" size="11.0" />
                            </font></Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="M+" GridPane.columnIndex="6">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MemoryButtons" text="M+" GridPane.columnIndex="6">
                            <font>
                               <Font name="Segoe UI Semibold" size="11.0" />
                            </font></Button>
-                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="MCl" GridPane.columnSpan="2">
+                        <Button maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#MemoryButtons" text="MC" GridPane.columnSpan="2">
                            <font>
                               <Font name="Segoe UI Semibold" size="11.0" />
                            </font></Button>
@@ -251,24 +252,24 @@
                <children>
                   <TabPane layoutX="14.0" layoutY="78.0" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="398.0" prefWidth="150.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
-                      <Tab closable="false" text="History">
-                           <content>
-                              <ScrollPane fx:id="historyscrollpane" hbarPolicy="NEVER" prefHeight="370.0" prefWidth="243.0" >
-                                      <content>
-                                         <HistoryObject fx:id="historyobject" spacing="10"/>
-                                      </content>
-                              </ScrollPane>
-                           </content>
-                        </Tab>
-                      <Tab text="Memory">
-                           <content>
-                              <ScrollPane fx:id="memoryscrollpane" hbarPolicy="NEVER" prefHeight="370.0" prefWidth="243.0" >
-                                 <content>
-                                    <MemoryObject fx:id="memoryobject" spacing="10"/>
-                                 </content>
-                              </ScrollPane>
-                           </content>
-                        </Tab>
+                       <Tab text="History">
+                          <content>
+                             <ScrollPane fx:id="historyScrollPane" hbarPolicy="NEVER" prefHeight="370.0" prefWidth="243.0" >
+                                <content>
+                                   <HistoryObject fx:id="historyObject" spacing="10"/>
+                                </content>
+                             </ScrollPane>
+                          </content>
+                       </Tab>
+                       <Tab closable="false" text="Memory">
+                         <content>
+                            <ScrollPane fx:id="memoryScrollPane" hbarPolicy="NEVER" prefHeight="370.0" prefWidth="243.0" >
+                               <content>
+                                  <MemoryObject fx:id="memoryObject" spacing="10"/>
+                               </content>
+                            </ScrollPane>
+                         </content>
+                      </Tab>
                     </tabs>
                   </TabPane>
                </children>

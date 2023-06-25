@@ -1,36 +1,61 @@
 package com.example.calc_u_later.controllers.toolscalculator;
 
+
 import javafx.geometry.Insets;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.LinkedList;
+import java.util.List;
+
+
+
 public class MemoryObject extends VBox {
-    public MemoryObject() {
-    }
-    private void AddMemoryElement(String value) {
-        Label element = new Label(value);
+    private static List<String> memoryStack = new LinkedList<>();
 
-        Button Mplus = new Button("M+");
-        Button Mmoins = new Button("M-");
-        Button MS = new Button("MS");
+    public MemoryObject() { }
 
+    public void AddMemoryElement(Label element, Button Add, Button Sub) {
         HBox a = new HBox();
-        a.getChildren().addAll(Mplus, Mmoins, MS);
+        memoryStack.add(element.getText());
+
+        Button MClear = new Button("MC");
+
+        a.getChildren().addAll(Add, Sub, MClear);
         getChildren().addAll(element, a);
+
+        MClear.setOnAction(e -> {
+            getChildren().remove(element);
+            getChildren().remove(a);
+        });
 
         setSpacing(10);
         setPadding(new Insets(10, 10, 10, 0));
     }
-    private void MPlusAction() {
 
 
+
+    public void CalculatorButtonMAdd(String operand) {
+        String newValue = Double.toString(Double.parseDouble(memoryStack.get(0)) + Double.parseDouble(operand));
+
+        memoryStack.set(0, newValue);
     }
-    private void MMoinsAction() {
 
+    public void CalculatorButtonMSub(String operand) {
+        String newValue = Double.toString(Double.parseDouble(memoryStack.get(0)) - Double.parseDouble(operand));
+
+        memoryStack.set(0, newValue);
     }
-    private void MSAction() {
 
+    public void ClearMemory() {
+        getChildren().clear();
+    }
+
+    public String CalculatorButtonMR() {
+        return memoryStack.get(0);
     }
 }

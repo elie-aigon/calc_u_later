@@ -8,49 +8,12 @@ import java.util.*;
 
 public class CalculatorModel {
 
-    public CalculatorModel() {
-
-    }
+    public CalculatorModel() { }
 
     public static String StringResult(ArrayList<String> tokens) {
         ArrayList<String> reversePolishExpression = ShuntingYardAlgo(tokens);
         return Double.toString(ReversePolishNotation(reversePolishExpression));
     }
-
-
-
-//    public static String ChainedOperation(ArrayList<String> tokens, String baseResult) {
-//        ArrayList<String> chainedOp = new ArrayList<>();
-//        ArrayList<String> secondOperandExpr = defineSecondOperand(tokens);
-//
-//        chainedOp.add(baseResult);
-//
-//        chainedOp.add(secondOperandExpr.get(secondOperandExpr.size() - 1));
-//        secondOperandExpr.remove(secondOperandExpr.size() - 1);
-//
-//        chainedOp.add(StringResult(secondOperandExpr));
-//
-//        return StringResult(chainedOp);
-//    }
-
-
-
-//    public String SingleOperation(ArrayList<String> tokens, String value){
-//        String operator = tokens.get(1);
-//        double x = Double.parseDouble(tokens.get(0 )), y = Double.parseDouble(value);
-//
-//        switch (operator) {
-//            case "+": return Double.toString(x - y);
-//            case "-": return Double.toString(x - y);
-//            case "*": return Double.toString(x * y);
-//            case "/": return Double.toString(x / y);
-//            case "%": return Double.toString((x/100) * y);
-//            case "yroot": return Double.toString(Math.pow(x, 1/y));
-//            case "^": return Double.toString(Math.pow(x, y));
-//            case "mod": return Double.toString(x % y);
-//            default: return null;
-//        }
-//    }
 
 
 
@@ -197,7 +160,7 @@ public class CalculatorModel {
         boolean inParentheses = false;
 
         for (int i = 0; i < tokens.size(); i++) {
-            if (!inParentheses && Pemdas(baseOperator) < Pemdas(tokens.get(i))) {
+            if (!inParentheses && Pemdas(tokens.get(i)) <= Pemdas(baseOperator)) {
                 baseOperator = tokens.get(i);
                 operandIndexStart = i + 1;
                 continue;
@@ -213,7 +176,7 @@ public class CalculatorModel {
             }
         }
 
-        for (int i = operandIndexStart; i < tokens.size(); i++) {
+        for (int i = operandIndexStart; i < tokens.size() - 1; i++) {
             secondOperandExpr.add(tokens.get(i));
         }
         secondOperandExpr.add(baseOperator);

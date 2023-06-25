@@ -4,11 +4,14 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
+import java.util.Stack;
+
 public class HistoryObject extends VBox{
-    public HistoryObject() {
-    }
+
+    public HistoryObject() { }
+
     public void AddHistoricElement(String calcul, String result) {
-        Label element = new Label(calcul + " = " + result);
+        Label element = new Label(calcul + result);
 
         getChildren().addAll(element);
 
