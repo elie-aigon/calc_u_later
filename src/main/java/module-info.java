@@ -7,5 +7,6 @@ module com.example.calc_u_later {
     exports com.example.calc_u_later;
     exports com.example.calc_u_later.controllers;
     exports com.example.calc_u_later.controllers.toolscalculator;
+    exports com.example.calc_u_later.controllers.toolsconverter;
     opens com.example.calc_u_later.controllers to javafx.fxml;
 }
