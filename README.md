@@ -49,5 +49,6 @@ git clone https://github.com/pelayo-joel/calc_u_later.git
 <br></br>
 ### **CREDITS** 
 
+- [Aigon Elie](https://github.com/elie-aigon)
 - [Pelayo Joel](https://github.com/pelayo-joel)
 
