@@ -1,6 +1,7 @@
 package com.example.calc_u_later.controllers;
 
 
+//FXML imports
 import javafx.fxml.FXML;
 import javafx.event.Event;
 import javafx.fxml.Initializable;
@@ -10,15 +11,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import java.net.URL;
 
+//Java imports
 import java.util.ArrayList;
 
 
+//Custom modules imports
 import com.example.calc_u_later.models.CalculatorModel;
 import com.example.calc_u_later.controllers.toolscalculator.HistoryObject;
 import com.example.calc_u_later.controllers.toolscalculator.MemoryObject;
 
 
 
+/*
+Controller for the calculator's tab, code here only handles what to display on both labels according to user input
+The goal was to reproduce has much as possible the behaviours on the windows calculator
+ */
 public class CalculatorController implements Initializable {
     //FXML elements
     @FXML private Label exprField;
@@ -51,22 +58,28 @@ public class CalculatorController implements Initializable {
     }
 
 
+    /* ----- FXML Methods ----- */
 
 
-
+    //Method for buttons considered as operator's (+, -, x, /, %, ^, Mod, yroot)
     @FXML
     private void OperatorButtons(Event event) {
+        //New operation and gets which operator has been pressed
         this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
 
+        //Needs if it has to use 'SpecialOperation' method or not but basically does the same thing
         if (buttonLabel.equals("+") || buttonLabel.equals("-") || buttonLabel.equals("x") || buttonLabel.equals("/")) {
+            //Adds the current value in the actual expression to be evaluated
             this.exprTokens.add(valueField.getText());
 
+            //Handles how to display the current value and the operator pressed in the expression label, depends on if the value comes from a function or if it's repeated
             if (this.isFuncValue) { exprField.setText( exprField.getText() + " " + buttonLabel + " " ); }
             else if (this.previousFuncLabel > 0) { exprField.setText(exprField.getText().substring(0, exprField.getText().length() - this.previousFuncLabel) + valueField.getText() + " " + buttonLabel + " "); }
             else { exprField.setText( exprField.getText() + valueField.getText() + " " + buttonLabel + " " ); }
 
+            //Adds the operator in the expression
             valueField.setText(this.calculator.StringResult(this.exprTokens));
             if (buttonLabel.equals("x")) { this.exprTokens.add("*"); }
             else { this.exprTokens.add(buttonLabel); }
@@ -82,20 +95,22 @@ public class CalculatorController implements Initializable {
             this.exprTokens.add(this.SpecialOperator(buttonLabel));
         }
 
-        for (String token : this.exprTokens) { System.out.print(token + " "); }
-        System.out.println();
+        //Updates flags and utilities accordingly
         this.isDecimal = false;
         this.isNewValue = true;
         this.isFuncValue = false;
         this.previousFuncLabel = 0;
     }
 
+    //Method for value buttons (all digits and constants)
     @FXML
     private void ValueButtons(Event event) {
+        //New operation and gets which value has been pressed
         this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
 
+        //Resets the label if it's a new value
         if (this.isNewValue) {
             if (this.isFuncValue) {
                 exprField.setText(exprField.getText().substring(0, exprField.getText().length() - this.previousFuncLabel));
@@ -104,8 +119,10 @@ public class CalculatorController implements Initializable {
             this.isNewValue = false;
         }
 
+        //Gets the current value as variable
         String currentValueTxt = valueField.getText();
 
+        //Displays the corresponding value
         switch (buttonLabel) {
             case "π":
                 valueField.setText("3.1415926535897932384626433832795");
@@ -118,12 +135,16 @@ public class CalculatorController implements Initializable {
                 else { valueField.setText(currentValueTxt + buttonLabel); }
                 break;
         }
+
+        //Updates flags and utilities accordingly
         this.isFuncValue = false;
         this.previousFuncLabel = 0;
     }
 
+    //Method for buttons considered as functions, they directly perform a math function on the current value
     @FXML
     private void FunctionButtons(Event event) {
+        //New operation and gets which value has been pressed
         this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
@@ -136,12 +157,15 @@ public class CalculatorController implements Initializable {
         }
 
         valueField.setText(this.calculator.Functions(buttonLabel, valueField.getText()));
+        //Updates flags and utilities accordingly
         this.isFuncValue = true;
         this.isNewValue = true;
     }
 
+    //Handles parentheses
     @FXML
     private void ParenthesesButtons(Event event) {
+        //New operation and gets which value has been pressed and the current value as a variable
         this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
@@ -167,12 +191,12 @@ public class CalculatorController implements Initializable {
             this.exprTokens.add(buttonLabel);
             exprField.setText(exprField.getText() + currentValueTxt + buttonLabel);
         }
-        for (String token : this.exprTokens) { System.out.print(token + " "); }
-        System.out.println();
     }
 
+    //Outputs the result given the expression, handles chained operation as well
     @FXML
     private void EqualButton() {
+        //Depending on the expression depths in parentheses it needs to close them if not done by the user
         if (this.parenthesesDepth != 0) {
             exprField.setText( exprField.getText() + " ");
 
@@ -191,9 +215,8 @@ public class CalculatorController implements Initializable {
             this.exprTokens.add(valueField.getText());
             exprField.setText( exprField.getText() + valueField.getText() + " ");
         }
-        for (String token : this.exprTokens) { System.out.print(token + " "); }
-        System.out.println();
 
+        //Will perform the corresponding method if consecutive press on '=', else we just need the result
         if (this.isChainedOperation) {
             this.ChainedOperation();
         }
@@ -201,20 +224,26 @@ public class CalculatorController implements Initializable {
             this.result = this.calculator.StringResult(this.exprTokens);
         }
 
+        //Updates the value with the result
         valueField.setText(this.result);
         exprField.setText( exprField.getText() + " = " );
 
         historyObject.AddHistoricElement(exprField.getText(), valueField.getText());
 
+        //Updates flags and utilities accordingly
         this.isChainedOperation = true;
     }
 
+    //Defines how to handle variables
     @FXML
     private void MemoryButtons(Event event) {
+        //New operation and gets which memory function has been pressed and the current value as a variable
+        this.NewOperation();
         Button valueButton = (Button) event.getSource();
         String buttonLabel = valueButton.getText();
         String currentValueTxt = valueField.getText();
 
+        //Directly creates the elements needed in the vbox stored in the memory tab, doing this here gives access to the value label
         Label memoryLabel = new Label(currentValueTxt);
         Button MAdd = new Button("M+");
         Button MSub = new Button("M-");
@@ -232,25 +261,30 @@ public class CalculatorController implements Initializable {
             case "MC":
                 memoryObject.ClearMemory();
                 break;
+            //
             case "MS":
-                memoryLabel.setOnMouseClicked(e -> valueField.setText(memoryLabel.getText()));
-                MAdd.setOnAction(e -> {
-                    double variableResult = Double.parseDouble(memoryLabel.getText()) + Double.parseDouble(valueField.getText());
-                    memoryLabel.setText(Double.toString(variableResult));
-                });
-                MSub.setOnAction(e -> {
-                    double variableResult = Double.parseDouble(memoryLabel.getText()) - Double.parseDouble(valueField.getText());
-                    memoryLabel.setText(Double.toString(variableResult));
-                });
+                if (!valueField.getText().equals("")) {
+                    memoryLabel.setOnMouseClicked(e -> valueField.setText(memoryLabel.getText()));
+                    MAdd.setOnAction(e -> {
+                        double variableResult = Double.parseDouble(memoryLabel.getText()) + Double.parseDouble(valueField.getText());
+                        memoryLabel.setText(Double.toString(variableResult));
+                    });
+                    MSub.setOnAction(e -> {
+                        double variableResult = Double.parseDouble(memoryLabel.getText()) - Double.parseDouble(valueField.getText());
+                        memoryLabel.setText(Double.toString(variableResult));
+                    });
 
-                memoryObject.AddMemoryElement(memoryLabel, MAdd, MSub);
+                    memoryObject.AddMemoryElement(memoryLabel, MAdd, MSub);
+                }
                 break;
         }
 
+        //Updates flags and utilities accordingly
         this.isFuncValue = false;
         this.isNewValue = true;
     }
 
+    //Just adds or removes the negative sign in front of the current value
     @FXML
     private void SignButton(Event event) {
         this.NewOperation();
@@ -262,6 +296,7 @@ public class CalculatorController implements Initializable {
         }
     }
 
+    //Adds the decimal point
     @FXML
     private void DecimalButton() {
         this.NewOperation();
@@ -272,6 +307,7 @@ public class CalculatorController implements Initializable {
         }
     }
 
+    //Resets all flags, removes the expression if pressed a second time
     @FXML
     private void ClearButton() {
         this.NewOperation();
@@ -290,6 +326,7 @@ public class CalculatorController implements Initializable {
         }
     }
 
+    //Deletes last char of current value
     @FXML
     private void BackspaceButton() {
         this.NewOperation();
@@ -307,9 +344,10 @@ public class CalculatorController implements Initializable {
     }
 
 
+    /* ----- Utility Methods ----- */
 
 
-
+    //Copies the operators in windows calculator
     private static String SpecialOperator(String op) {
         switch (op) {
             case "x√": return "yroot";
@@ -323,6 +361,7 @@ public class CalculatorController implements Initializable {
 
 
 
+    //What to display on the expression depending on the function pressed
     private String Functions(String func, String valueLabel) {
         if (this.isFuncValue) {
             switch (func) {
@@ -350,6 +389,7 @@ public class CalculatorController implements Initializable {
 
 
 
+    //Defines how operations are chained if equal button is pressed consecutively
      private void ChainedOperation() {
          ArrayList<String> chainedOp = new ArrayList<>();
          ArrayList<String> secondOperandExpr = this.calculator.defineSecondOperand(this.exprTokens);

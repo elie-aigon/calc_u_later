@@ -2,10 +2,15 @@ package com.example.calc_u_later.models;
 
 
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.Stack;
 
-import java.util.*;
 
 
+/*
+Defines the calculator's logic or how it mostly evaluates mathematical expressions
+It basically uses the ShuntingYardAlgorithm to get the ReversePolishExpression to evaluate, the algorithm handles pemdas and parentheses
+ */
 public class CalculatorModel {
 
     public CalculatorModel() { }
@@ -17,6 +22,7 @@ public class CalculatorModel {
 
 
 
+    //Returns the function result
     public static String Functions(String func, String strValue) {
         double value = Double.parseDouble(strValue);
 
@@ -40,11 +46,49 @@ public class CalculatorModel {
 
 
 
+    //Used for chained operations, tries to get the operand on the rightest part of the whole expression
+    public ArrayList<String> defineSecondOperand(ArrayList<String> tokens) {
+        ArrayList<String> secondOperandExpr = new ArrayList<>();
+        String baseOperator = "";
+        int operandIndexStart = 0;
+
+        int parenthesesDepth = 0;
+        boolean inParentheses = false; //Used to skip parentheses
+
+        for (int i = 0; i < tokens.size(); i++) {
+            if (!inParentheses && Pemdas(tokens.get(i)) <= Pemdas(baseOperator)) {
+                baseOperator = tokens.get(i);
+                operandIndexStart = i + 1;
+                continue;
+            }
+
+            if (tokens.get(i).equals("(")) {
+                parenthesesDepth++;
+                inParentheses = true;
+            }
+            else if (tokens.get(i).equals(")")) {
+                parenthesesDepth--;
+                if (parenthesesDepth == 0) { inParentheses = false; }
+            }
+        }
+
+        //Fill (starting where the last operator with the most priority is) the secondOperandExpression to be evaluated after
+        for (int i = operandIndexStart; i < tokens.size() - 1; i++) {
+            secondOperandExpr.add(tokens.get(i));
+        }
+        secondOperandExpr.add(baseOperator);
+
+        return secondOperandExpr;
+    }
 
 
+
+
+
+    //Defines the RPN expression, tokens here is the expression as an arraylist with each token being either a value, an operator, or a parentheses
     private static ArrayList<String> ShuntingYardAlgo(ArrayList<String> tokens) {
-        ArrayList<String> rpnExpr = new ArrayList<>();
-        Stack<String> opStack = new Stack<String>();
+        ArrayList<String> rpnExpr = new ArrayList<>(); //Actual RPN expression to return
+        Stack<String> opStack = new Stack<String>(); //Stack of operators
 
         for (String token : tokens) {
             if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/") || token.equals("yroot") || token.equals("^") || token.equals("mod") || token.equals("%")) {
@@ -80,6 +124,7 @@ public class CalculatorModel {
 
 
 
+    //Evaluates the RPN expression
     private static double ReversePolishNotation(ArrayList<String> rpnExpression) {
         Stack<String> resultStack = new Stack<>();
         double x, y;
@@ -150,39 +195,6 @@ public class CalculatorModel {
     }
 
 
-
-    public ArrayList<String> defineSecondOperand(ArrayList<String> tokens) {
-        ArrayList<String> secondOperandExpr = new ArrayList<>();
-        String baseOperator = "";
-        int operandIndexStart = 0;
-
-        int parenthesesDepth = 0;
-        boolean inParentheses = false;
-
-        for (int i = 0; i < tokens.size(); i++) {
-            if (!inParentheses && Pemdas(tokens.get(i)) <= Pemdas(baseOperator)) {
-                baseOperator = tokens.get(i);
-                operandIndexStart = i + 1;
-                continue;
-            }
-
-            if (tokens.get(i).equals("(")) {
-                parenthesesDepth++;
-                inParentheses = true;
-            }
-            else if (tokens.get(i).equals(")")) {
-                parenthesesDepth--;
-                if (parenthesesDepth == 0) { inParentheses = false; }
-            }
-        }
-
-        for (int i = operandIndexStart; i < tokens.size() - 1; i++) {
-            secondOperandExpr.add(tokens.get(i));
-        }
-        secondOperandExpr.add(baseOperator);
-
-        return secondOperandExpr;
-    }
 
 
 
