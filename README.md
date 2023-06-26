@@ -13,7 +13,7 @@
 
 - git clone
 ```
-git clone https://github.com/pelayo-joel/calc_u_later.git
+git clone https://github.com/elie-aigon/calc_u_later.git
 ```
 
 - [JDK](https://www.oracle.com/fr/java/technologies/downloads/)
